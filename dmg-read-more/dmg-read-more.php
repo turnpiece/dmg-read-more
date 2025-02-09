@@ -12,6 +12,14 @@
  * @package         Dmg_Read_More
  */
 
+// If this file is called directly, abort.
+if ( ! defined( 'WPINC' ) ) {
+	die;
+}
+
+// Version of plugin
+define( 'DMG_READ_MORE_VERSION', '0.1.0' );
+
 // Load Gutenberg block
 require_once 'read-more-link/read-more-link.php';
 
