@@ -9,7 +9,7 @@ class DMG_Read_More_Command {
 
     const DEFAULT_DATE_RANGE = '-30 days'; // date range to use if no dates passed as arguments
 
-    const DEBUGGING = true; // turn on/off debugging
+    const DEBUGGING = false; // turn on/off debugging
 
     /**
      * Search for posts containing the 'dmg/read-more-link' block within a given date range, or within the last 30 days if no dates are given.
