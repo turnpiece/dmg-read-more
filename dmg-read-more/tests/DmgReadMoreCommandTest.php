@@ -6,7 +6,7 @@ use WP_CLI;
 use WP_UnitTestCase;
 
 // PHPUnit tests
-class TesDmgReadMoreCommandTest extends use WP_UnitTestCase {
+class TesDmgReadMoreCommandTest extends WP_UnitTestCase {
 
     protected static $post_with_block;
     protected static $post_without_block;
