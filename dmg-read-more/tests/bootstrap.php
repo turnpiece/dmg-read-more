@@ -1,5 +1,8 @@
 <?php
 
+// Load the PHPUnit Polyfills
+require_once dirname(__DIR__) . '/vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php';
+/*
 // Load the PHPUnit Polyfills.
 if ( file_exists( dirname( __DIR__ ) . '/vendor/autoload.php' ) ) {
     require_once dirname( __DIR__ ) . '/vendor/autoload.php';
@@ -9,7 +12,7 @@ if ( file_exists( dirname( __DIR__ ) . '/vendor/autoload.php' ) ) {
     echo "PHPUnit Polyfills library not found. Please install it.\n";
     exit( 1 );
 }
-
+*/
 // Continue with loading the WordPress test environment.
 $_tests_dir = getenv( 'WP_TESTS_DIR' );
 
