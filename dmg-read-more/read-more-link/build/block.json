@@ -20,5 +20,5 @@
   },
   "editorScript": "file:./index.js",
   "style": "file:./style-index.css",
-  "editorStyle": "file:./editor.scss"
+  "editorStyle": "file:./index.css"
 }

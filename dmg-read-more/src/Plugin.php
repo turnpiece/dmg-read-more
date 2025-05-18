@@ -6,7 +6,7 @@ class Plugin
 {
     public static function init()
     {
-        add_action('init', [self::class, 'create_block_read_more_link']);
+        self::create_block_read_more_link();
 
         if (defined('WP_CLI') && WP_CLI) {
             \DMG\ReadMore\Cli_DMG_Read_More_Posts::register();

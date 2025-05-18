@@ -18,3 +18,5 @@ require_once __DIR__ . '/vendor/autoload.php';
 use DMG\ReadMore\Plugin;
 
 add_action('init', [Plugin::class, 'init']);
+
+error_log(plugin_dir_path(__DIR__) . 'read-more-link/build');
