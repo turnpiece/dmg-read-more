@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name:     DMG Read More
  * Plugin URI:      https://github.com/turnpiece/dmg-read-more
@@ -7,21 +8,13 @@
  * Author URI:      https://github.com/turnpiece/
  * Text Domain:     dmg-read-more
  * Domain Path:     /languages
- * Version:         0.1.0
+ * Version:         0.1.1
  *
  * @package         Dmg_Read_More
  */
 
-// If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-	die;
-}
+require_once __DIR__ . '/vendor/autoload.php';
 
-// Version of plugin
-define( 'DMG_READ_MORE_VERSION', '0.1.0' );
+use DMG\ReadMore\Plugin;
 
-// Load Gutenberg block
-require_once 'read-more-link/read-more-link.php';
-
-// Load CLI command
-require_once 'includes/cli-dmg-read-more-posts.php';
+add_action('init', [Plugin::class, 'init']);
