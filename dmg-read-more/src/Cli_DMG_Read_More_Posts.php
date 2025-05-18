@@ -53,39 +53,58 @@ class Cli_DMG_Read_More_Posts
             WP_CLI::log("Searching for posts with '" . self::BLOCK_NAME . "' block between {$date_after} and {$date_before}...");
         }
 
-        // get any posts with the read more link within the given date range from the database
-        $query = $wpdb->prepare(
-            "SELECT ID FROM {$wpdb->posts} 
-             WHERE post_type = 'post' 
-             AND post_status = 'publish' 
-             AND post_date BETWEEN %s AND %s 
-             AND post_content LIKE %s",
-            $date_after . ' 00:00:00',
-            $date_before . ' 23:59:59',
-            '%' . $wpdb->esc_like(self::BLOCK_NAME) . '%'
-        );
+        // process query in batches
+        $batch_size = 1000;
+        $offset = 0;
+        $total_found = 0;
 
-        // get the posts with the read more link in them
-        $results = $wpdb->get_col($query);
+        do {
+            $query = $wpdb->prepare(
+                "SELECT ID FROM {$wpdb->posts}
+                WHERE post_type = 'post'
+                AND post_status = 'publish'
+                AND post_date BETWEEN %s AND %s
+                AND post_content LIKE %s
+                LIMIT %d OFFSET %d",
+                $date_after . ' 00:00:00',
+                $date_before . ' 23:59:59',
+                '%' . $wpdb->esc_like(self::BLOCK_NAME) . '%',
+                $batch_size,
+                $offset
+            );
 
-        // check we have results
-        if (empty($results)) {
-            WP_CLI::log('No posts found');
-        } else {
+            // get the posts with the block we're looking for
+            $results = $wpdb->get_col($query);
+
+            if (empty($results)) {
+                break;
+            }
+
             // loop through found posts
             foreach ($results as $post_id) {
                 if ($double_check) {
-                    // double check that we found posts with actual read more blocks
-                    // not just posts that happen to contain the same text as the block name
+                    // double check that the post actually contains the block we're looking for
+                    // and not just text that matches the name of the block
                     $content = get_post_field('post_content', $post_id);
                     $blocks = parse_blocks($content);
-                    if (empty($blocks) || ! self::contains_block($blocks)) {
+                    if (empty($blocks) || !self::contains_block($blocks)) {
+                        if (self::DEBUGGING) {
+                            WP_CLI::log("Skipping post {$post_id} as it does not contain the block we're looking for.");
+                        }
                         continue;
                     }
                 }
-                // log the post ID
-                WP_CLI::log($post_id);
+
+                WP_CLI::log((string) $post_id);
+                $total_found++;
             }
+
+            $offset += $batch_size;
+        } while (count($results) === $batch_size);
+
+        if (self::DEBUGGING) {
+            // write to log
+            WP_CLI::log("Done. Found {$total_found} posts.");
         }
     }
 
