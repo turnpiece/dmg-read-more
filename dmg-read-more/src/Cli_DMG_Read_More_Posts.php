@@ -6,18 +6,13 @@ use WP_CLI;
 
 class Cli_DMG_Read_More_Posts
 {
+
+    const BLOCK_NAME = 'dmg/read-more-link';
     const DEFAULT_DATE_RANGE = '-30 days'; // date range to use if no dates passed as arguments
 
-    const DEBUGGING = false; // turn on/off debugging
-
-    const BLOCK_NAME = 'dmg/read-more-link'; // the name of the block we're looking for
-
-    const DOUBLE_CHECK = true; // double checks the found block name actually is a block - adds load so may need to be set to false for large datasets, though passing --double-check=false to the cli command would do this as well
-
-    // Register the CLI command
-    public static function register()
+    public static function register(): void
     {
-        \WP_CLI::add_command('dmg-read-more', self::class);
+        WP_CLI::add_command('dmg-read-more', self::class);
     }
 
     /**
@@ -38,34 +33,47 @@ class Cli_DMG_Read_More_Posts
      * @param array $args
      * @param array $assoc_args
      */
-    public function search(array $args, array $assoc_args)
+    public function search(array $args, array $assoc_args): void
     {
-        global $wpdb;
+        $date_after  = $assoc_args['date-after'] ?? date('Y-m-d', strtotime(self::DEFAULT_DATE_RANGE));
+        $date_before = $assoc_args['date-before'] ?? date('Y-m-d');
+        $double_check = isset($assoc_args['double-check']) ? filter_var($assoc_args['double-check'], FILTER_VALIDATE_BOOLEAN) : true;
 
-        // get the date range
-        list($date_after, $date_before) = $this->get_date_range($assoc_args);
+        $posts = self::get_post_ids_with_read_more_block($date_after, $date_before, $double_check);
 
-        // set double checking parameter
-        $double_check = isset($assoc_args['double-check']) ? filter_var($assoc_args['double-check'], FILTER_VALIDATE_BOOLEAN) : self::DOUBLE_CHECK;
-
-        if (self::DEBUGGING) {
-            // write to log
-            WP_CLI::log("Searching for posts with '" . self::BLOCK_NAME . "' block between {$date_after} and {$date_before}...");
+        if (empty($posts)) {
+            WP_CLI::log("No posts found.");
+            return;
         }
 
-        // process query in batches
+        foreach ($posts as $post_id) {
+            WP_CLI::log($post_id);
+        }
+    }
+
+    /**
+     * Get post IDs with the 'dmg/read-more-link' block within a given date range.
+     *
+     * @param string $date_after
+     * @param string $date_before
+     * @param bool $double_check
+     * @return array
+     */
+    public static function get_post_ids_with_read_more_block(string $date_after, string $date_before, bool $double_check = true): array
+    {
+        global $wpdb;
         $batch_size = 1000;
         $offset = 0;
-        $total_found = 0;
+        $matching_ids = [];
 
         do {
             $query = $wpdb->prepare(
                 "SELECT ID FROM {$wpdb->posts}
-                WHERE post_type = 'post'
-                AND post_status = 'publish'
-                AND post_date BETWEEN %s AND %s
-                AND post_content LIKE %s
-                LIMIT %d OFFSET %d",
+                 WHERE post_type = 'post'
+                 AND post_status = 'publish'
+                 AND post_date BETWEEN %s AND %s
+                 AND post_content LIKE %s
+                 LIMIT %d OFFSET %d",
                 $date_after . ' 00:00:00',
                 $date_before . ' 23:59:59',
                 '%' . $wpdb->esc_like(self::BLOCK_NAME) . '%',
@@ -73,39 +81,26 @@ class Cli_DMG_Read_More_Posts
                 $offset
             );
 
-            // get the posts with the block we're looking for
             $results = $wpdb->get_col($query);
 
             if (empty($results)) {
                 break;
             }
 
-            // loop through found posts
             foreach ($results as $post_id) {
                 if ($double_check) {
-                    // double check that the post actually contains the block we're looking for
-                    // and not just text that matches the name of the block
-                    $content = get_post_field('post_content', $post_id);
-                    $blocks = parse_blocks($content);
-                    if (empty($blocks) || !self::contains_block($blocks)) {
-                        if (self::DEBUGGING) {
-                            WP_CLI::log("Skipping post {$post_id} as it does not contain the block we're looking for.");
-                        }
+                    $blocks = parse_blocks(get_post_field('post_content', $post_id));
+                    if (!self::contains_block($blocks)) {
                         continue;
                     }
                 }
-
-                WP_CLI::log((string) $post_id);
-                $total_found++;
+                $matching_ids[] = $post_id;
             }
 
             $offset += $batch_size;
         } while (count($results) === $batch_size);
 
-        if (self::DEBUGGING) {
-            // write to log
-            WP_CLI::log("Done. Found {$total_found} posts.");
-        }
+        return $matching_ids;
     }
 
     /**
@@ -120,32 +115,10 @@ class Cli_DMG_Read_More_Posts
             if ($block['blockName'] === self::BLOCK_NAME) {
                 return true;
             }
-
-            // also check inner blocks
-            if (! empty($block['innerBlocks']) && self::contains_block($block['innerBlocks'])) {
+            if (!empty($block['innerBlocks']) && self::contains_block($block['innerBlocks'])) {
                 return true;
             }
         }
-
         return false;
-    }
-
-    /**
-     * Get the date range from the command line arguments or use the default date range.
-     *
-     * @param array $assoc_args
-     * @return array
-     */
-    private function get_date_range(array $assoc_args): array
-    {
-        $date_after = isset($assoc_args['date-after']) ? $assoc_args['date-after'] : date('Y-m-d', strtotime(self::DEFAULT_DATE_RANGE));
-        $date_before = isset($assoc_args['date-before']) ? $assoc_args['date-before'] : date('Y-m-d');
-
-        // Sanitize and validate dates
-        if (!strtotime($date_after) || !strtotime($date_before)) {
-            WP_CLI::warning("Invalid date format so using default");
-        }
-
-        return array($date_after, $date_before);
     }
 }

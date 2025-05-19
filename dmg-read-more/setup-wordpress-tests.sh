@@ -1,14 +1,19 @@
 #!/bin/bash
 
-# --- Configuration ---
-DB_NAME="local"
-DB_USER="root"
-DB_PASS="root"
-DB_HOST="localhost"  # or 'localhost' or your LocalWP socket/host
+# Load environment variables from .env if available
+if [ -f .env ]; then
+  echo "Loading .env..."
+  source .env
+fi
+
+# Configuration with environment variable fallbacks
+DB_NAME="${DB_NAME:-local}"
+DB_USER="${DB_USER:-root}"
+DB_PASS="${DB_PASS:-root}"
+DB_HOST="${DB_HOST:-localhost}"
 WP_TESTS_DIR="/tmp/wordpress-tests-lib"
 WP_CORE_DIR="/tmp/wordpress"
 WP_VERSION="latest"
-# ----------------------
 
 set -e
 
@@ -45,6 +50,9 @@ chmod -R 755 "$WP_CORE_DIR"
 # Export WP_TESTS_DIR for PHPUnit
 export WP_TESTS_DIR="$WP_TESTS_DIR"
 echo "WP_TESTS_DIR set to $WP_TESTS_DIR"
+
+# Strip positional args (assume DB credentials passed above)
+shift 6
 
 # Run PHPUnit
 echo "Running PHPUnit..."

@@ -1,6 +1,7 @@
 # From scaffolder
 phpcs.xml
 phpunit.xml
+.phpunit.result.cache
 wp-cli.local.yml
 node_modules/
 *.sql

@@ -17,6 +17,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use DMG\ReadMore\Plugin;
 
+// initialise plugin with CLI commands
 add_action('init', [Plugin::class, 'init']);
 
-error_log(plugin_dir_path(__DIR__) . 'read-more-link/build');
+// Register the block
+add_action('init', [Plugin::class, 'create_block_read_more_link']);
