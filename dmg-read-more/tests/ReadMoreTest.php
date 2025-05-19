@@ -40,6 +40,6 @@ class ReadMoreTest extends WP_UnitTestCase
             false
         );
 
-        $this->assertContains($post_id, $found);
+        $this->assertContains((string) $post_id, $found);
     }
 }

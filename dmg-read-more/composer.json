@@ -3,7 +3,8 @@
   "description": "WordPress plugin: DMG Read More",
   "type": "wordpress-plugin",
   "require-dev": {
-    "phpunit/phpunit": "^9.6"
+    "phpunit/phpunit": "^9.6",
+    "yoast/phpunit-polyfills": "^4.0"
   },
   "autoload": {
     "psr-4": {
