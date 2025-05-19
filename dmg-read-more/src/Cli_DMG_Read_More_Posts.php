@@ -83,6 +83,10 @@ class Cli_DMG_Read_More_Posts
 
             $results = $wpdb->get_col($query);
 
+            if ($results === null) {
+                WP_CLI::error("Database query failed: " . $wpdb->last_error);
+            }
+
             if (empty($results)) {
                 break;
             }
