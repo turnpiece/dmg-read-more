@@ -1,8 +1,8 @@
 {
 	"name": "read-more-link",
-	"version": "0.1.0",
-	"description": "Example block scaffolded with Create Block tool.",
-	"author": "The WordPress Contributors",
+	"version": "1.0.0",
+	"description": "DMG Read More link block",
+	"author": "Paul Jenkins",
 	"license": "GPL-2.0-or-later",
 	"main": "build/index.js",
 	"scripts": {

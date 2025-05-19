@@ -8,7 +8,7 @@
  * Author URI:      https://github.com/turnpiece/
  * Text Domain:     dmg-read-more
  * Domain Path:     /languages
- * Version:         0.1.1
+ * Version:         1.0.0
  *
  * @package         Dmg_Read_More
  */

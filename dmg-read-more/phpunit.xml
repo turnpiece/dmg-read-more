@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<phpunit bootstrap="tests/bootstrap.php">
+	<testsuites>
+		<testsuite name="plugin tests">
+			<directory>./tests/</directory>
+		</testsuite>
+	</testsuites>
+	<php>
+  		<ini name="display_errors" value="1"/>
+  		<ini name="error_reporting" value="E_ALL &amp; ~E_NOTICE &amp; ~E_DEPRECATED"/>
+	</php>
+
+</phpunit>

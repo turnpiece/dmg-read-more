@@ -1,33 +1,99 @@
-# DMG Read More
+# DMG Read More Plugin
 
-A WordPress plugin with two different features: a Gutenberg block and a WP-CLI command.
+A custom WordPress plugin with two main features:
 
-## Contents
+1. A custom Gutenberg block called **Read More Link**
+2. A WP-CLI command to search for posts using that block
 
-Includes the following files:
+---
 
-- `.gitignore`. Used to exclude certain files from the repository.
-- `README.md`. The file that you’re currently reading.
-- A `dmg-read-more` directory that contains the source code - the WordPress plugin.
+## 📦 Installation
 
-## Features
+1. Clone this repository into your WordPress `wp-content/plugins/` directory:
+   ```bash
+   git clone https://github.com/your-username/dmg-read-more.git
+   cd dmg-read-more
+   ```
 
-### A Gutenberg Block
+2. Install PHP and JavaScript dependencies using Composer:
+   ```bash
+   composer install
+   npm install
+   ```
 
-Write a Gutenberg block using native WP React tools (no ACF or other plugin dependencies). This block should allow editors to search for and then choose a published post to insert into the editor as a stylized anchor link.
+3. Build the block assets:
+   ```bash
+   cd read-more-link
+   npm run build
+   ```
 
-Editors should be able to search posts in the InspectorControls using a search string. It should paginate results. It should support searching for a specific post ID. Recent posts should be shown to choose from by default.
+4. Activate the plugin via the WordPress admin or WP-CLI:
+   ```bash
+   wp plugin activate dmg-read-more
+   ```
 
-The anchor text should be the post title and the anchor href should be the post permalink. The anchor should be output within a paragraph element with a CSS class of `dmg-read-more` added to it. The anchor should be prepended with the words `Read More: `.
+---
 
-Choosing a new post should update the anchor link shown in the editor.
+## ✨ Features
 
-### A WP-CLI Command
+### Gutenberg Block
 
-Create a custom WP-CLI command named like, `dmg-read-more search` This command will take optional date-range arguments like “date-before” and “date-after” If the dates are omitted, the command will default to the last 30 days.
+- **Read More Link** — A toggleable block for linking to selected posts.
+- Built with `@wordpress/scripts` and located in `/read-more-link`.
 
-The command will execute a WP_Query search for Posts within the date range looking for posts containing the aforementioned Gutenberg block. Performance is key, this WP-CLI command will be tested against a database that has tens of millions records in the wp_posts table.
+### WP-CLI Command
 
-The command will log to STDOUT all Post IDs for the matching results.
+Search for posts using the block within a given date range:
 
-If no posts are found, or any other errors encountered, output a log message.
+```bash
+wp dmg-read-more search --date-after=2024-01-01 --date-before=2024-12-31
+```
+
+Optional flags:
+- `--double-check=false` — Skips `parse_blocks()` for faster performance on large datasets.
+
+---
+
+## 🧪 Running Tests
+
+This plugin includes a PHPUnit test suite.
+
+To set up the environment:
+
+```bash
+cp .env.example .env
+# Edit .env with your DB_HOST, DB_NAME, etc.
+
+./setup-wordpress-tests.sh
+vendor/bin/phpunit
+```
+
+---
+
+## 🛠️ Requirements
+
+- WordPress 6.x
+- PHP 7.4+
+- Node 18+
+- Composer
+
+---
+
+## 📁 Folder Structure
+
+```
+dmg-read-more/
+├── read-more-link/       # Block source and build
+├── src/                  # Plugin classes
+├── tests/                # PHPUnit tests
+├── setup-wordpress-tests.sh
+├── composer.json
+├── package.json
+```
+
+---
+
+## 📝 License
+
+GPL-2.0-or-later  
+See [LICENSE](https://www.gnu.org/licenses/gpl-2.0.html) for details.

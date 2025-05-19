@@ -1,9 +1,6 @@
 # From scaffolder
 phpcs.xml
-phpunit.xml
-.phpunit.result.cache
 wp-cli.local.yml
-node_modules/
 *.sql
 *.tar.gz
 *.zip
@@ -31,6 +28,11 @@ Thumbs.db
 nbproject
 *.sublime-project
 *.sublime-workspace
+.idea/
+.vscode/
+*.log
+*.swp
+*.swo
 
 # Dreamweaver added files
 _notes
@@ -45,5 +47,22 @@ dwsync.xml
 .svn
 .CVS
 intermediate
-.idea
 cache
+
+# Node and build artifacts
+node_modules/
+*.zip
+*.tar.gz
+
+# PHP Unit
+phpunit.xml.bak
+.phpunit.result.cache
+
+# WordPress test temp folders
+/tmp/
+wordpress/
+wordpress-tests-lib/
+wp-tests-config.php
+
+# Ignore block build folder
+read-more-link/build/
