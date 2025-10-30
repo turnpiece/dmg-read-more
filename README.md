@@ -12,21 +12,22 @@ A custom WordPress plugin with two main features:
 1. Clone this repository into your WordPress `wp-content/plugins/` directory:
 
    ```bash
+   cd wp-content/plugins
    git clone https://github.com/turnpiece/dmg-read-more.git
    cd dmg-read-more
    ```
 
-2. Install PHP and JavaScript dependencies using Composer:
+2. Install PHP dependencies:
 
    ```bash
    composer install
-   npm install
    ```
 
-3. Build the block assets:
+3. Install JavaScript dependencies and build the block assets:
 
    ```bash
    cd read-more-link
+   npm install
    npm run build
    ```
 
@@ -62,7 +63,7 @@ Optional flags:
 
 This plugin includes a PHPUnit test suite.
 
-To set up the environment:
+To set up the test environment:
 
 ```bash
 cp .env.example .env
@@ -86,13 +87,22 @@ vendor/bin/phpunit
 ## 📁 Folder Structure
 
 ```
-dmg-read-more/
-├── read-more-link/       # Block source and build
-├── src/                  # Plugin classes
-├── tests/                # PHPUnit tests
+dmg-read-more/              # Plugin root
+├── dmg-read-more.php       # Main plugin file
+├── readme.txt              # WordPress.org readme
+├── composer.json           # PHP dependencies
+├── phpunit.xml             # PHPUnit configuration
+├── read-more-link/         # Block source and build
+│   ├── package.json        # Block dependencies
+│   ├── src/                # Block source files
+│   └── build/              # Compiled block assets
+├── src/                    # Plugin PHP classes
+│   ├── Plugin.php
+│   └── Cli_DMG_Read_More_Posts.php
+├── tests/                  # PHPUnit tests
 ├── setup-wordpress-tests.sh
-├── composer.json
-├── package.json
+├── uninstall.php
+└── vendor/                 # Composer packages (gitignored)
 ```
 
 ---

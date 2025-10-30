@@ -54,6 +54,12 @@ node_modules/
 *.zip
 *.tar.gz
 
+# Composer
+vendor/
+
+# Environment files
+.env
+
 # PHP Unit
 phpunit.xml.bak
 .phpunit.result.cache
