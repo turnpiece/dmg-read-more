@@ -10,18 +10,21 @@ A custom WordPress plugin with two main features:
 ## 📦 Installation
 
 1. Clone this repository into your WordPress `wp-content/plugins/` directory:
+
    ```bash
-   git clone https://github.com/your-username/dmg-read-more.git
+   git clone https://github.com/turnpiece/dmg-read-more.git
    cd dmg-read-more
    ```
 
 2. Install PHP and JavaScript dependencies using Composer:
+
    ```bash
    composer install
    npm install
    ```
 
 3. Build the block assets:
+
    ```bash
    cd read-more-link
    npm run build
@@ -50,6 +53,7 @@ wp dmg-read-more search --date-after=2024-01-01 --date-before=2024-12-31
 ```
 
 Optional flags:
+
 - `--double-check=false` — Skips `parse_blocks()` for faster performance on large datasets.
 
 ---
